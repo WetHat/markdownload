@@ -168,7 +168,7 @@ function turndown(content, options, article) {
       '\n' + fence + '\n\n'
     )
   }
-
+  // handle <pre> as <code> blocks
   turndownService.addRule('fencedCodeBlock', {
     filter: function (node, options) {
       return (
@@ -183,7 +183,30 @@ function turndown(content, options, article) {
     }
   });
 
-  // handle <pre> as code blocks
+  function convertToFencedBlock(node, options) {
+    const preformatted = node.innerText;
+
+    var fenceChar = options.fence.charAt(0);
+    var fenceSize = 3;
+    var fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm');
+
+    var match;
+    while ((match = fenceInCodeRegex.exec(preformatted))) {
+      if (match[0].length >= fenceSize) {
+        fenceSize = match[0].length + 1;
+      }
+    }
+
+    var fence = repeat(fenceChar, fenceSize);
+
+    return (
+      '\n\n' + fence + '\n' +
+      preformatted.replace(/\n$/, '') +
+      '\n' + fence + '\n\n'
+    )
+  }
+
+  // handle <pre> as fenced blocks
   turndownService.addRule('pre', {
     filter: (node, tdopts) => {
       return node.nodeName == 'PRE'
@@ -191,7 +214,7 @@ function turndown(content, options, article) {
              && !node.querySelector('img');
     },
     replacement: (content, node, tdopts) => {
-      return convertToFencedCodeBlock(node, tdopts);
+      return convertToFencedBlock(node, tdopts);
     }
   });
 
