@@ -218,27 +218,6 @@ function turndown(content, options, article) {
     }
   });
 
-  function isPipeTable(node) {
-    if (node.querySelector('td[colspan],td[rowspan],th[colspan],th[rowspan]')){
-      return false;
-    }
-
-    if (node.querySelector('table,ol,ul,li,dt,dd,dl,section,article,pre,blockquote,form,h1,h2,h3,h4,h5,h6')) {
-      return false;
-    }
-
-    return true;
-  }
-  // handle complex tables
-  turndownService.addRule('tbl', {
-    filter: (node, tdopts) => {
-      return node.nodeName == 'TABLE' && !isPipeTable(node);
-    },
-    replacement: (content, node, tdopts) => {
-      return node.outerHTML;
-    }
-  });
-
   let markdown = options.frontmatter + turndownService.turndown(content) + options.backmatter;
 
   // strip out non-printing special characters which CodeMirror displays as a red dot
