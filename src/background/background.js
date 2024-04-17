@@ -223,8 +223,17 @@ function turndown(content, options, article) {
       return false;
     }
 
-    if (node.querySelector('table,ol,ul,li,dt,dd,dl,section,article,pre,blockquote,form,h1,h2,h3,h4,h5,h6')) {
+    if (node.querySelector('table,ol,ul,li,dt,dd,dl,section,article,aside,nav,pre,blockquote,center,form,h1,h2,h3,h4,h5,h6')) {
       return false;
+    }
+
+    // inspect table cells
+    let tds = node.getElementsByTagName('td');
+    for (let i = 0; i < tds.length; i++) {
+      const td = tds[i];
+      if (td.querySelectorAll("p,div,br,blockquote").length > 1) {
+        return false;
+      }
     }
 
     return true;
