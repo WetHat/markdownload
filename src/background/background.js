@@ -816,7 +816,6 @@ async function getArticleFromDom(domString) {
   article.protocol = url.protocol;
   article.search = url.search;
 
-
   // make sure the dom has a head
   if (dom.head) {
     // and the keywords, should they exist, as an array
@@ -830,6 +829,9 @@ async function getArticleFromDom(domString) {
         article[key] = val;
       }
     })
+
+    // backfill canonical OpenGraph properties
+    article["image"] = article["image"] || article["og:image"] || article["twitter:image"];
   }
 
   article.math = math
